@@ -161,19 +161,14 @@ function KeenSlider(initialContainer, initialOptions = {}) {
   function eventsAdd() {
     eventAdd(window, 'orientationchange', sliderResizeFix)
     eventAdd(window, 'resize', () => sliderResize())
-    eventAdd(container, 'dragstart', function (e) {
-      if (!isTouchable()) return
-      e.preventDefault()
-    })
-    eventAdd(container, 'mousedown', eventDragStart)
     eventAdd(container, 'mousemove', eventDrag)
     eventAdd(container, 'mouseleave', eventDragStop)
     eventAdd(container, 'mouseup', eventDragStop)
-    eventAdd(container, 'touchstart', eventDragStart, {
+    eventAdd(container, 'mousedown', eventDragStart, {
       passive: true,
     })
-    eventAdd(container, 'touchmove', eventDrag, {
-      passive: false,
+    eventAdd(container, 'touchstart', eventDragStart, {
+      passive: true,
     })
     eventAdd(container, 'touchend', eventDragStop, {
       passive: true,
@@ -181,9 +176,15 @@ function KeenSlider(initialContainer, initialOptions = {}) {
     eventAdd(container, 'touchcancel', eventDragStop, {
       passive: true,
     })
-    eventAdd(window, 'wheel', eventWheel, {
+    eventAdd(container, 'touchmove', eventDrag, {
       passive: false,
     })
+    
+    if (!!initialOptions.deactivateWheelEvent) {
+      eventAdd(window, 'wheel', eventWheel, {
+        passive: false,
+      })
+    }
   }
 
   function eventsRemove() {
